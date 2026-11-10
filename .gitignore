@@ -1,0 +1,8 @@
+.build/
+build/
+.attic/
+.signing-identity
+*.xcodeproj
+.swiftpm/
+.DS_Store
+zones-update-key.txt
