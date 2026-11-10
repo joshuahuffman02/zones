@@ -18,6 +18,7 @@ Also turn off macOS's own edge snapping, which fights with Zones: System Setting
 - **Snap:** hold ⇧ while dragging a window. Your zones appear; drop on one.
 - **Span:** hold ⇧⌘ while dragging. The window covers every zone from where you pressed ⌘ to where you let go.
 - **Resize neighbours:** drag the gap between two windows that sit side by side or one above the other. Both resize together. On a zone line, the line moves too, so later snaps match.
+- **Monitors coming and going:** Zones remembers where your windows sit for each set of monitors. Plug the ultrawide back in and its windows return to where they were; unplug it and the laptop goes back to how you last had it on its own. Only windows that were there before move. Turn it off, or run it by hand, from the menu (**Put Windows Back…**).
 - **Edit zones:** menu → your monitor → **Edit Zones…**, or ⌃⌥E with the mouse over that monitor.
   - Drag the lines between zones. They stick to halves, thirds and quarters; hold ⌥ to place them anywhere.
   - Hover a zone for **Split ↔︎**, **Split ↕︎** and **Remove**.
@@ -47,6 +48,7 @@ swift test                    # zone geometry tests
   - `Snapper`: ⇧-drag snapping and the keyboard commands.
   - `GapHandles`: resize handles in the gaps between windows.
   - `Editor`: the zone editor.
+  - `Arrangements`: remembers window spots per set of monitors and restores them.
   - `Updater`: Sparkle updates.
 - **Signing:** builds are signed with an Apple Development certificate. The ID is saved in `.signing-identity`, which stays out of the repo. A stable signature keeps the Accessibility permission across updates.
 - **Update signing key:** releases are also signed with an EdDSA key kept in the releasing Mac's keychain. Its public half is in `build.sh`.

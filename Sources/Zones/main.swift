@@ -15,12 +15,14 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
     private var permissionTimer: Timer?
     private var editor: ZoneEditor?
     private let updater = Updater()
+    private let arrangements = Arrangements()
 
     func applicationDidFinishLaunching(_ notification: Notification) {
         statusItem = NSStatusBar.system.statusItem(withLength: NSStatusItem.squareLength)
         statusItem.button?.image = NSImage(systemSymbolName: "square.grid.2x2", accessibilityDescription: "Zones")
         let menu = NSMenu()
         menu.delegate = self
+        menu.autoenablesItems = false
         statusItem.menu = menu
 
         if AXIsProcessTrustedWithOptions([kAXTrustedCheckOptionPrompt.takeUnretainedValue(): true] as CFDictionary) {
@@ -38,6 +40,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         updater.isBusy = { [weak self] in self?.editor != nil || self?.snapper.isDragging == true }
         snapper.start()
         gapHandles.start()
+        arrangements.start()
         bindKeys()
     }
 
@@ -92,6 +95,13 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         let gr = item("Drag Gaps to Resize Neighbours", #selector(toggleGapResize))
         gr.state = store.gapResize ? .on : .off
         menu.addItem(gr)
+        let ar = item("Put Windows Back When Monitors Change", #selector(toggleArrangements))
+        ar.state = arrangements.enabled ? .on : .off
+        menu.addItem(ar)
+        let now = item("Put Windows Back Now", #selector(restoreArrangement))
+        now.isEnabled = arrangements.hasSavedSetup
+        now.indentationLevel = 1
+        menu.addItem(now)
         menu.addItem(.separator())
 
         for (i, s) in ZScreen.ordered.enumerated() {
@@ -210,6 +220,9 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSMenuDelegate {
         store.gapResize.toggle()
         gapHandles.refresh()
     }
+
+    @objc private func toggleArrangements() { arrangements.enabled.toggle() }
+    @objc private func restoreArrangement() { arrangements.restore() }
 
     @objc private func pickGap(_ sender: NSMenuItem) {
         store.gap = Double(sender.tag)
